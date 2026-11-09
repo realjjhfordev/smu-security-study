@@ -1,4 +1,5 @@
 import type { Lesson } from "@/content/lessons/types";
+import { useEffect } from "react";
 
 // Only bold, emphasis, and inline code are recognized; source text is never treated as HTML.
 function InlineText({ text }: { text: string }) {
@@ -10,6 +11,11 @@ function InlineText({ text }: { text: string }) {
 }
 
 export default function LessonContent({ lesson }: { lesson: Lesson }) {
+  const headingId = (index: number) => `section-${lesson.sectionId}-heading-${index}`;
+  useEffect(() => {
+    const target = document.getElementById(window.location.hash.slice(1));
+    if (target) target.scrollIntoView();
+  }, [lesson.sectionId]);
   return (
     <>
       <header className="lesson-source-header">
@@ -17,15 +23,22 @@ export default function LessonContent({ lesson }: { lesson: Lesson }) {
         <h2>{lesson.title}</h2>
       </header>
       {lesson.relatedQuestionIds.length > 0 && <aside className="lesson-related" aria-label="관련 기출문제">
-        <h3>연결 기출 {lesson.relatedQuestionIds[0]}–{lesson.relatedQuestionIds[lesson.relatedQuestionIds.length - 1]}</h3>
+        <h3>관련 기출 번호 · 연결 준비 중</h3>
         <ul>{lesson.relatedQuestionIds.map(id => <li key={id}>{id}</li>)}</ul>
         <p>관련 기출 문항번호입니다. 문제 데이터 등록 후 풀이 화면에 연결됩니다.</p>
       </aside>}
+      {lesson.blocks.some(block => block.type === "heading") && <nav className="lesson-toc" aria-label="본문 목차">
+        <h3>본문 목차</h3>
+        <ul>{lesson.blocks.map((block, index) => block.type === "heading" &&
+          <li key={index} className={block.level === 4 ? "toc-subheading" : undefined}>
+            <a href={`#${headingId(index)}`}><InlineText text={block.text}/></a>
+          </li>)}</ul>
+      </nav>}
       <div className="lesson-prose">
         {lesson.blocks.map((block, index) => {
           if (block.type === "heading") return block.level === 4
-            ? <h4 key={index}><InlineText text={block.text}/></h4>
-            : <h3 key={index}><InlineText text={block.text}/></h3>;
+            ? <h4 id={headingId(index)} tabIndex={-1} key={index}><InlineText text={block.text}/></h4>
+            : <h3 id={headingId(index)} tabIndex={-1} key={index}><InlineText text={block.text}/></h3>;
           if (block.type === "paragraph") return <p key={index}>{block.strong ? <strong><InlineText text={block.text}/></strong> : <InlineText text={block.text}/>}</p>;
           if (block.type === "code") return <pre className="lesson-code" key={index}><code>{block.text}</code></pre>;
           if (block.type === "quote") return <blockquote key={index}><InlineText text={block.text}/></blockquote>;

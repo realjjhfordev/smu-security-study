@@ -16,7 +16,7 @@ export const section37: Lesson = {
   "blocks": [
     {
       "type": "heading",
-      "text": "5. 디지털 포렌식과 침해사고 대응",
+      "text": "1. 디지털 포렌식과 침해사고 대응",
       "level": 3
     },
     {
@@ -41,7 +41,7 @@ export const section37: Lesson = {
     },
     {
       "type": "heading",
-      "text": "6. 증거를 다룰 때 가장 중요한 원칙",
+      "text": "2. 증거를 다룰 때 가장 중요한 원칙",
       "level": 3
     },
     {
@@ -83,7 +83,7 @@ export const section37: Lesson = {
     },
     {
       "type": "heading",
-      "text": "7. 디지털 포렌식 절차와 종류",
+      "text": "3. 디지털 포렌식 절차와 종류",
       "level": 3
     },
     {
@@ -104,7 +104,7 @@ export const section37: Lesson = {
     },
     {
       "type": "paragraph",
-      "text": "시험용으로 한 줄로 묶으면: `SET은 안전한 전자결제`, `CERT는 사고 대응 조직`, `디지털 포렌식은 증거를 보존하며 사고를 재구성하는 과정`입니다."
+      "text": "시험용으로 한 줄로 묶으면: `CERT는 사고 대응 조직`, `디지털 포렌식은 증거를 보존하며 사고를 재구성하는 과정`입니다."
     },
     {
       "type": "list",
