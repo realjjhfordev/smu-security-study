@@ -16,12 +16,12 @@ export const section34: Lesson = {
   "blocks": [
     {
       "type": "heading",
-      "text": "DHCP·DNS·데이터베이스 보안 요약",
+      "text": "DHCP·DNS 보안 요약",
       "level": 3
     },
     {
       "type": "paragraph",
-      "text": "이 내용은 세 부분으로 이어집니다. DHCP가 단말에 네트워크 설정을 주고, DNS가 이름을 IP 주소로 바꾸며, 데이터베이스 보안은 저장된 정보에 누가 접근하고 무엇을 알 수 있는지 통제합니다."
+      "text": "이 단원은 DHCP와 DNS 보안을 다룹니다. DHCP는 단말에 네트워크 설정을 주고, DNS는 이름을 IP 주소로 바꿉니다."
     },
     {
       "type": "heading",

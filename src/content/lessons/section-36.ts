@@ -22,6 +22,11 @@ export const section36: Lesson = {
   ],
   "blocks": [
     {
+      "type": "heading",
+      "text": "1. 전자상거래의 보안 요구사항",
+      "level": 3
+    },
+    {
       "type": "paragraph",
       "text": "전자상거래에서는 결제 정보를 보호하면서 거래 당사자가 누구인지 확인해야 합니다. 핵심 요구사항은 다음 네 가지입니다."
     },
@@ -49,6 +54,11 @@ export const section36: Lesson = {
           "거래 후 자신이 수행한 거래를 부인하기 어렵게 함"
         ]
       ]
+    },
+    {
+      "type": "heading",
+      "text": "2. SET의 구성 요소",
+      "level": 3
     },
     {
       "type": "paragraph",
@@ -86,6 +96,11 @@ export const section36: Lesson = {
           "거래 참여자의 인증서 발급"
         ]
       ]
+    },
+    {
+      "type": "heading",
+      "text": "3. SET의 거래 흐름과 정보 보호",
+      "level": 3
     },
     {
       "type": "paragraph",

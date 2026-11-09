@@ -16,3 +16,18 @@
 
 /* Literal lesson commands and code samples. */
 .lesson-prose .lesson-code{overflow-x:auto;white-space:pre;background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:16px;margin:18px 0;font-size:12px;line-height:1.8}.lesson-prose .lesson-code code{background:transparent;padding:0;white-space:pre;overflow-wrap:normal}
+
+/* Lesson navigation and search feedback */
+.search-status{font-size:12px;color:var(--muted);margin:0 0 14px}
+.search-empty{padding:18px;font-size:13px}
+.lesson-toc{border:1px solid var(--line);border-radius:9px;padding:16px 20px;margin-bottom:24px;background:#fafbfe}
+.lesson-toc h3{margin:0 0 10px;color:var(--sm-blue)}
+.lesson-toc ul{list-style:none;padding:0;margin:0;max-height:320px;overflow:auto}
+.lesson-toc li{margin:5px 0;font-size:13px}
+.lesson-toc .toc-subheading{padding-left:16px;font-size:12px}
+.lesson-toc a{display:inline-block;padding:3px 0;text-decoration:underline;text-underline-offset:3px}
+.lesson-prose h3,.lesson-prose h4{scroll-margin-top:24px}
+.lesson-pagination{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:20px;margin:24px 0 16px}
+.lesson-pagination span{font-size:12px;color:var(--muted);white-space:nowrap}
+.lesson-detail:focus-visible{outline:3px solid var(--sm-gold);outline-offset:3px}
+@media(max-width:480px){.lesson-pagination button{padding:10px;font-size:12px}}

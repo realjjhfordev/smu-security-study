@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", "module": "Node16", "moduleResolution": "Node16",
+    "strict": true, "skipLibCheck": true, "outDir": "../.test-build", "rootDir": "../src",
+    "types": []
+  },
+  "include": ["../src/content/**/*.ts", "../src/lib/lesson-search.ts"]
+}
