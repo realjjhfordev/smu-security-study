@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test:content": "tsc -p tests/tsconfig.json && node tests/content.cjs"
+    "test:content": "tsc -p tests/tsconfig.json && node tests/content.cjs",
+    "test:questions": "tsc -p tests/tsconfig.json && node tests/questions.cjs"
   },
   "engines": {
     "node": "24.x"

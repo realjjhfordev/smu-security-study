@@ -1,16 +1,10 @@
 import type { Lesson } from "@/content/lessons/types";
 import { useEffect } from "react";
 
-// Only bold, emphasis, and inline code are recognized; source text is never treated as HTML.
-function InlineText({ text }: { text: string }) {
-  return <>{text.split(/(\*\*[\s\S]+?\*\*|\*[^*\n]+\*|`[^`]+`)/g).map((part, i) =>
-    part.startsWith("**") && part.endsWith("**") ? <strong key={i}>{part.slice(2, -2)}</strong> :
-    part.startsWith("*") && part.endsWith("*") ? <em key={i}>{part.slice(1, -1)}</em> :
-    part.startsWith("`") && part.endsWith("`") ? <code key={i}>{part.slice(1, -1)}</code> : part
-  )}</>;
-}
+import InlineText from './InlineText';
+import {questionById} from '@/lib/question-bank';
 
-export default function LessonContent({ lesson }: { lesson: Lesson }) {
+export default function LessonContent({ lesson, onQuestion }: { lesson: Lesson; onQuestion?: (id:string)=>void }) {
   const headingId = (index: number) => `section-${lesson.sectionId}-heading-${index}`;
   useEffect(() => {
     const target = document.getElementById(window.location.hash.slice(1));
@@ -23,9 +17,9 @@ export default function LessonContent({ lesson }: { lesson: Lesson }) {
         <h2>{lesson.title}</h2>
       </header>
       {lesson.relatedQuestionIds.length > 0 && <aside className="lesson-related" aria-label="관련 기출문제">
-        <h3>관련 기출 번호 · 연결 준비 중</h3>
-        <ul>{lesson.relatedQuestionIds.map(id => <li key={id}>{id}</li>)}</ul>
-        <p>관련 기출 문항번호입니다. 문제 데이터 등록 후 풀이 화면에 연결됩니다.</p>
+        <h3>관련 기출문제</h3>
+        <ul>{lesson.relatedQuestionIds.map(id => <li key={id}>{questionById.has(id) ? <a href={`/?view=문제풀이&question=${id}`} onClick={e=>{if(onQuestion && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey){e.preventDefault();onQuestion(id);}}}>{id} 풀기 →</a> : <span>{id} · 미등록</span>}</li>)}</ul>
+        <p>선별해서 등록한 문제만 풀 수 있어. 미등록 번호는 아직 문제를 넣지 않은 상태야.</p>
       </aside>}
       {lesson.blocks.some(block => block.type === "heading") && <nav className="lesson-toc" aria-label="본문 목차">
         <h3>본문 목차</h3>

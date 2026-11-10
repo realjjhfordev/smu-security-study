@@ -31,3 +31,17 @@
 .lesson-pagination span{font-size:12px;color:var(--muted);white-space:nowrap}
 .lesson-detail:focus-visible{outline:3px solid var(--sm-gold);outline-offset:3px}
 @media(max-width:480px){.lesson-pagination button{padding:10px;font-size:12px}}
+
+/* Selected question bank */
+.question-filters {flex-wrap:wrap;gap:16px}
+.question-filters label {min-width:180px;flex:1}
+.question-picker {display:block;margin:16px 0}
+.question-picker select {display:block;width:100%;max-width:100%;margin-top:8px}
+.question-panel h2,.question-panel .option-text,.question-concepts {overflow-wrap:anywhere}
+.question-panel .answer-option .option-text {white-space:pre-wrap;width:auto;height:auto;border:0;border-radius:0;background:transparent;color:inherit;display:block;flex:1;min-width:0;font-weight:400;font-size:inherit}
+.question-concepts {border-top:1px solid #dbe3ee;margin-top:24px;padding-top:16px}
+.question-concepts button {display:block;margin:8px 0;text-align:left;white-space:normal}
+.question-concepts small {display:block;margin-top:12px}
+.lesson-related a {text-decoration:underline;text-underline-offset:3px}
+.question-panel .preserve-lines {white-space:pre-wrap}
+@media(max-width:760px){.question-filters label{min-width:0;width:100%}.question-meta{flex-wrap:wrap}.question-panel{padding:18px}.question-panel .answer-option{align-items:flex-start}.list-row{flex-wrap:wrap;gap:10px}}

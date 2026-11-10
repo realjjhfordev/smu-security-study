@@ -1,0 +1,60 @@
+// Requires jsdom in the test environment. This checks behavior, not browser layout.
+const {JSDOM}=require('jsdom');
+const assert=require('node:assert/strict');
+const path=require('node:path');
+const Module=require('node:module');
+const resolve=Module._resolveFilename;
+Module._resolveFilename=function(name,...args){return resolve.call(this,name.startsWith('@/')?path.resolve(__dirname,'../.test-build',name.slice(2)):name,...args)};
+const dom=new JSDOM('<div id="root"></div>',{url:'http://localhost/?view=문제풀이&question=Q001',pretendToBeVisual:true});
+Object.assign(global,{window:dom.window,self:dom.window,document:dom.window.document,localStorage:dom.window.localStorage,HTMLElement:dom.window.HTMLElement,requestAnimationFrame:cb=>setTimeout(cb,0),IS_REACT_ACT_ENVIRONMENT:true});
+dom.window.HTMLElement.prototype.scrollIntoView=function(){};
+const React=require('react');const {act}=React;const {createRoot}=require('react-dom/client');
+const StudyApp=require('../.test-build/components/StudyApp').default;
+const root=createRoot(document.getElementById('root'));
+const buttons=()=>[...document.querySelectorAll('button')];
+const button=text=>buttons().find(b=>b.textContent===text);
+const click=async(el)=>{assert.ok(el,'button exists');await act(async()=>{el.click();await new Promise(r=>setTimeout(r,10));});};
+const current=()=>document.querySelector('.lesson-source-header h2').textContent;
+const fill=async(value)=>{await act(async()=>{const input=document.querySelector('.filters input');Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype,'value').set.call(input,value);input.dispatchEvent(new dom.window.Event('input',{bubbles:true}));});};
+const {questions,practiceStorageKey}=require('../.test-build/lib/question-bank');
+const QuestionPractice=require('../.test-build/components/QuestionPractice').default;
+const goto=async(url)=>act(async()=>{window.history.pushState(null,'',url);window.dispatchEvent(new dom.window.PopStateEvent('popstate'));});
+(async()=>{
+ localStorage.setItem('smu-ui-v1',JSON.stringify({name:'테스트',attempts:[{q:0,correct:true}],completed:[1],posts:[],challenges:[]}));
+ await act(async()=>root.render(React.createElement(StudyApp)));
+ assert.equal(document.querySelector('.question-meta .pill').textContent,'Q001');
+ assert.equal(button('답안 제출').disabled,true);
+ await click(document.querySelectorAll('input[name=answer]')[0]);
+ assert.equal(button('답안 제출').disabled,true);
+ await click(button('확실해요'));
+ const submit=button('답안 제출');await act(async()=>{submit.click();submit.click();});
+ assert.equal(JSON.parse(localStorage.getItem(practiceStorageKey)).length,1);
+ assert.ok(document.querySelector('.result').textContent.includes('해설'));
+ assert.equal(document.querySelector('fieldset').disabled,true);
+ await click(button('복습·분석'));
+ assert.ok(document.querySelector('.stat-grid').textContent.includes('1 / 209'));
+ assert.equal(JSON.parse(localStorage.getItem('smu-ui-v1')).attempts.length,1);
+ await goto('/learn?view=개념학습&section=1');
+ const related=document.querySelector('.lesson-related a');assert.ok(related.textContent.includes('Q001'));
+ assert.ok(document.querySelector('.lesson-related').textContent.includes('Q002 · 미등록'));
+ await click(related);assert.equal(document.querySelector('.question-meta .pill').textContent,'Q001');
+ await click(document.querySelector('.question-concepts button'));assert.ok(current().startsWith('SECTION 01.'));
+ await act(async()=>{window.history.back();await new Promise(r=>setTimeout(r,30));});assert.equal(document.querySelector('.question-meta .pill').textContent,'Q001');
+ await goto('/?view=문제풀이&question=Q290');assert.equal(document.querySelector('.question-meta .pill').textContent,'Q290');assert.equal(button('다음 문제 →').disabled,true);
+ await act(async()=>root.render(null));await act(async()=>root.render(React.createElement(StudyApp)));assert.equal(document.querySelector('.question-meta .pill').textContent,'Q290');
+ await goto('/?view=문제풀이&question=Q999');assert.ok(document.querySelector('[role=alert]').textContent.includes('미등록'));assert.equal(button('다음 문제 →').disabled,true);
+ const select=document.querySelector('.question-filters select');await act(async()=>{select.value='6';select.dispatchEvent(new dom.window.Event('change',{bubbles:true}));});assert.equal(document.querySelector('.question-picker select').options.length,1);
+ await act(async()=>root.render(null));
+ // Submit every original answer through the real rendered controls, catching answer index mistakes.
+ const recorded=[];
+ for(const q of questions){
+  await act(async()=>root.render(React.createElement(QuestionPractice,{questionId:q.id,onQuestion:()=>{},onLesson:()=>{},onAttempt:a=>recorded.push(a),ready:true})));
+  await act(async()=>document.querySelectorAll('input[name=answer]')[q.answer-1].click());
+  await act(async()=>button('확실해요').click());
+  await act(async()=>button('답안 제출').click());
+  assert.equal(recorded.at(-1).questionId,q.id);assert.equal(recorded.at(-1).correct,true);
+ }
+ assert.equal(recorded.length,209);
+ await act(async()=>root.unmount());
+ console.log('PASS: UI submission of all 209 answers, duplicate guard, old sample isolation, persistence, lesson links, history, missing IDs and empty filters');
+})().catch(e=>{console.error(e);process.exitCode=1});
