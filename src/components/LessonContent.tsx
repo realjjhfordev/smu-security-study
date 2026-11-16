@@ -16,10 +16,10 @@ export default function LessonContent({ lesson, onQuestion }: { lesson: Lesson; 
         <p>{lesson.partTitle}</p>
         <h2>{lesson.title}</h2>
       </header>
-      {lesson.relatedQuestionIds.length > 0 && <aside className="lesson-related" aria-label="관련 기출문제">
-        <h3>관련 기출문제</h3>
+      {lesson.relatedQuestionIds.length > 0 && <aside className="lesson-related" aria-label="관련 변형문제">
+        <h3>관련 변형문제</h3>
         <ul>{lesson.relatedQuestionIds.map(id => <li key={id}>{questionById.has(id) ? <a href={`/?view=문제풀이&question=${id}`} onClick={e=>{if(onQuestion && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey){e.preventDefault();onQuestion(id);}}}>{id} 풀기 →</a> : <span>{id} · 미등록</span>}</li>)}</ul>
-        <p>선별해서 등록한 문제만 풀 수 있어. 미등록 번호는 아직 문제를 넣지 않은 상태야.</p>
+        <p>문제번호를 누르면 바로 풀 수 있어.</p>
       </aside>}
       {lesson.blocks.some(block => block.type === "heading") && <nav className="lesson-toc" aria-label="본문 목차">
         <h3>본문 목차</h3>
