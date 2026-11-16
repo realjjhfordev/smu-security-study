@@ -4,8 +4,10 @@ import {curriculum,sections} from '@/content/curriculum';
 import {questions,questionById,relatedLessons,confidences,type QuestionAttempt} from '@/lib/question-bank';
 import InlineText from './InlineText';
 
-export default function QuestionPractice({questionId,onQuestion,onLesson,onAttempt,ready}:{questionId:string;onQuestion:(id:string)=>void;onLesson:(id:number)=>void;onAttempt:(attempt:QuestionAttempt)=>void;ready:boolean}) {
- const [part,setPart]=useState(0),[section,setSection]=useState(0),[search,setSearch]=useState('');
+export type PracticeFilters={part:number;section:number;search:string};
+
+export default function QuestionPractice({questionId,filters,onFilters,onQuestion,onLesson,onAttempt,ready}:{questionId:string;filters:PracticeFilters;onFilters:(filters:PracticeFilters)=>void;onQuestion:(id:string)=>void;onLesson:(id:number)=>void;onAttempt:(attempt:QuestionAttempt)=>void;ready:boolean}) {
+ const {part,section,search}=filters;
  const query=search.normalize('NFKC').trim().toLowerCase();
  const number=/^q?\s*(\d{1,3})\s*번?$/.exec(query);
  const searchedId=number?`Q${number[1].padStart(3,'0')}`:'';
@@ -17,15 +19,16 @@ export default function QuestionPractice({questionId,onQuestion,onLesson,onAttem
  return <>
   <header className="workspace-heading"><p className="eyebrow">PRACTICE</p><h1>개념을 문제로 확인해 봐</h1><p>기출 변형 {questions.length}문항 · 답과 확신 정도를 고른 뒤 제출하면 해설을 볼 수 있어.</p></header>
   <div className="filters question-filters">
-   <label>문제 검색<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="527번 · Q527 · 문제 내용"/></label>
-   <label>PART<select value={part} onChange={e=>{setPart(Number(e.target.value));setSection(0);}}><option value={0}>전체 PART</option>{curriculum.map(p=><option key={p.id} value={p.id}>{p.id}. {p.title}</option>)}</select></label>
-   <label>단원<select value={section} onChange={e=>setSection(Number(e.target.value))}><option value={0}>전체 단원</option>{sections.filter(s=>!part||s.part===part).map(s=><option key={s.id} value={s.id}>{String(s.id).padStart(2,'0')}. {s.title}</option>)}</select></label>
+   <label>문제 검색<input value={search} onChange={e=>onFilters({...filters,search:e.target.value})} placeholder="527번 · Q527 · 문제 내용"/></label>
+   <label>PART<select value={part} onChange={e=>onFilters({...filters,part:Number(e.target.value),section:0})}><option value={0}>전체 PART</option>{curriculum.map(p=><option key={p.id} value={p.id}>{p.id}. {p.title}</option>)}</select></label>
+   <label>단원<select value={section} onChange={e=>onFilters({...filters,section:Number(e.target.value)})}><option value={0}>전체 단원</option>{sections.filter(s=>!part||s.part===part).map(s=><option key={s.id} value={s.id}>{String(s.id).padStart(2,'0')}. {s.title}</option>)}</select></label>
   </div>
-  <p role="status">검색 결과 {filtered.length}문항{question&&position<0?' · 현재 문제는 검색 조건 밖에 있어. 아래 목록에서 다른 문제를 골라도 돼.':''}</p>
-  <label className="question-picker">풀 문제 선택<select value={position<0?'':questionId} onChange={e=>{if(e.target.value)onQuestion(e.target.value);}}><option value="" disabled>목록에서 문제를 골라 줘</option>{filtered.map(q=><option key={q.id} value={q.id}>{q.id} · {q.question.replace(/\s+/g,' ').slice(0,80)}</option>)}</select></label>
-  {!filtered.length&&<p className="empty">{selectedPart===7?'PART 7은 등록된 문제가 아직 없어.':'이 조건에 맞는 문제가 없어. 검색어나 단원을 바꿔 봐.'}</p>}
-  {question?<QuestionCard key={question.id} questionId={question.id} ready={ready} onAttempt={onAttempt} onLesson={onLesson}/>:<article className="panel" role="alert"><h2>{questionId} · 미등록 문제</h2><p>이 번호의 문제는 아직 없어. 위 목록에서 등록된 문제를 골라 줘.</p></article>}
-  <nav className="lesson-pagination" aria-label="문제 이동"><button disabled={position<=0} onClick={()=>onQuestion(filtered[position-1].id)}>← 이전 문제</button><span>{position<0?'목록 밖':`${position+1} / ${filtered.length}`}</span><button disabled={position<0||position>=filtered.length-1} onClick={()=>onQuestion(filtered[position+1].id)}>다음 문제 →</button></nav>
+  <p role="status">검색 결과 {filtered.length}문항{filtered.length>0&&question&&position<0?' · 현재 문제는 검색 조건 밖에 있어. 아래 목록에서 다른 문제를 골라도 돼.':''}</p>
+  {filtered.length===0?<p className="empty">{selectedPart===7?'PART 7은 등록된 문제가 아직 없어.':'이 조건에 맞는 문제가 없어. 검색어나 단원을 바꿔 봐.'}</p>:<>
+   <label className="question-picker">풀 문제 선택<select value={position<0?'':questionId} onChange={e=>{if(e.target.value)onQuestion(e.target.value);}}><option value="" disabled>목록에서 문제를 골라 줘</option>{filtered.map(q=><option key={q.id} value={q.id}>{q.id} · {q.question.replace(/\s+/g,' ').slice(0,80)}</option>)}</select></label>
+   {question?<QuestionCard key={question.id} questionId={question.id} ready={ready} onAttempt={onAttempt} onLesson={onLesson}/>:<article className="panel" role="alert"><h2>{questionId} · 미등록 문제</h2><p>이 번호의 문제는 아직 없어. 위 목록에서 등록된 문제를 골라 줘.</p></article>}
+   <nav className="lesson-pagination" aria-label="문제 이동"><button disabled={position<=0} onClick={()=>onQuestion(filtered[position-1].id)}>← 이전 문제</button><span>{position<0?'목록 밖':`${position+1} / ${filtered.length}`}</span><button disabled={position<0||position>=filtered.length-1} onClick={()=>onQuestion(filtered[position+1].id)}>다음 문제 →</button></nav>
+  </>}
  </>;
 }
 
