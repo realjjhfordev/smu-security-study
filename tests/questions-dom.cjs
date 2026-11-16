@@ -21,8 +21,12 @@ const QuestionPractice=require('../.test-build/components/QuestionPractice').def
 const goto=async(url)=>act(async()=>{window.history.pushState(null,'',url);window.dispatchEvent(new dom.window.PopStateEvent('popstate'));});
 (async()=>{
  localStorage.setItem('smu-ui-v1',JSON.stringify({name:'테스트',attempts:[{q:0,correct:true}],completed:[1],posts:[],challenges:[]}));
+ const legacyAttempts=JSON.stringify([{id:'legacy',questionId:'Q001',choice:1,confidence:'확실해요',correct:true,date:'2026-11-10T00:00:00Z'}]);
+ localStorage.setItem('smu-question-attempts-v1',legacyAttempts);
  await act(async()=>root.render(React.createElement(StudyApp)));
  assert.equal(document.querySelector('.question-meta .pill').textContent,'Q001');
+ assert.deepEqual(JSON.parse(localStorage.getItem(practiceStorageKey)),[]);
+ assert.ok(document.querySelector('.demo-banner').textContent.includes('527문항'));
  assert.equal(button('답안 제출').disabled,true);
  await click(document.querySelectorAll('input[name=answer]')[0]);
  assert.equal(button('답안 제출').disabled,true);
@@ -32,18 +36,37 @@ const goto=async(url)=>act(async()=>{window.history.pushState(null,'',url);windo
  assert.ok(document.querySelector('.result').textContent.includes('해설'));
  assert.equal(document.querySelector('fieldset').disabled,true);
  await click(button('복습·분석'));
- assert.ok(document.querySelector('.stat-grid').textContent.includes('1 / 209'));
+ assert.ok(document.querySelector('.stat-grid').textContent.includes('1 / 527'));
  assert.equal(JSON.parse(localStorage.getItem('smu-ui-v1')).attempts.length,1);
+ assert.deepEqual(JSON.parse(localStorage.getItem('smu-ui-v1')).completed,[1]);
+ assert.equal(localStorage.getItem('smu-question-attempts-v1'),legacyAttempts);
  await goto('/learn?view=개념학습&section=1');
  const related=document.querySelector('.lesson-related a');assert.ok(related.textContent.includes('Q001'));
- assert.ok(document.querySelector('.lesson-related').textContent.includes('Q002 · 미등록'));
+ assert.ok(document.querySelector('.lesson-related a[href$=Q002]'));
  await click(related);assert.equal(document.querySelector('.question-meta .pill').textContent,'Q001');
  await click(document.querySelector('.question-concepts button'));assert.ok(current().startsWith('SECTION 01.'));
  await act(async()=>{window.history.back();await new Promise(r=>setTimeout(r,30));});assert.equal(document.querySelector('.question-meta .pill').textContent,'Q001');
- await goto('/?view=문제풀이&question=Q290');assert.equal(document.querySelector('.question-meta .pill').textContent,'Q290');assert.equal(button('다음 문제 →').disabled,true);
- await act(async()=>root.render(null));await act(async()=>root.render(React.createElement(StudyApp)));assert.equal(document.querySelector('.question-meta .pill').textContent,'Q290');
+ await goto('/?view=문제풀이&question=Q527');assert.equal(document.querySelector('.question-meta .pill').textContent,'Q527');assert.equal(button('다음 문제 →').disabled,true);
+ await act(async()=>root.render(null));await act(async()=>root.render(React.createElement(StudyApp)));assert.equal(document.querySelector('.question-meta .pill').textContent,'Q527');
  await goto('/?view=문제풀이&question=Q999');assert.ok(document.querySelector('[role=alert]').textContent.includes('미등록'));assert.equal(button('다음 문제 →').disabled,true);
- const select=document.querySelector('.question-filters select');await act(async()=>{select.value='6';select.dispatchEvent(new dom.window.Event('change',{bubbles:true}));});assert.equal(document.querySelector('.question-picker select').options.length,1);
+ const changeSelect=async(select,value)=>act(async()=>{select.value=value;select.dispatchEvent(new dom.window.Event('change',{bubbles:true}));});
+ const select=document.querySelector('.question-filters select');
+ const picker=document.querySelector('.question-picker select');
+ await changeSelect(select,'6');
+ assert.equal(picker.options.length,105);
+ assert.equal(picker.options[1].value,'Q424');
+ await fill('４２４번');
+ assert.equal(picker.options.length,2);
+ assert.equal(picker.options[1].value,'Q424');
+ await changeSelect(picker,'Q424');
+ assert.equal(document.querySelector('.question-meta .pill').textContent,'Q424');
+ await click(document.querySelector('.question-concepts button'));
+ assert.ok(current().startsWith('SECTION 31.'));
+ await click(document.querySelector('.lesson-related a[href$=Q424]'));
+ assert.equal(document.querySelector('.question-meta .pill').textContent,'Q424');
+ await changeSelect(document.querySelector('.question-filters select'),'7');
+ assert.equal(document.querySelector('.question-picker select').options.length,1);
+ assert.match(document.querySelector('.empty').textContent,/PART 7/);
  await act(async()=>root.render(null));
  // Submit every original answer through the real rendered controls, catching answer index mistakes.
  const recorded=[];
@@ -54,7 +77,7 @@ const goto=async(url)=>act(async()=>{window.history.pushState(null,'',url);windo
   await act(async()=>button('답안 제출').click());
   assert.equal(recorded.at(-1).questionId,q.id);assert.equal(recorded.at(-1).correct,true);
  }
- assert.equal(recorded.length,209);
+ assert.equal(recorded.length,527);
  await act(async()=>root.unmount());
- console.log('PASS: UI submission of all 209 answers, duplicate guard, old sample isolation, persistence, lesson links, history, missing IDs and empty filters');
+ console.log('PASS: UI submission of all 527 answers, duplicate guard, old bank isolation, persistence, lesson links, history, missing IDs and empty filters');
 })().catch(e=>{console.error(e);process.exitCode=1});

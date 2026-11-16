@@ -7,7 +7,8 @@ export function relatedLessons(id:string) {
 }
 export type QuestionAttempt = {id:string;questionId:string;choice:number;confidence:string;correct:boolean;date:string};
 export const confidences = ['확실해요','헷갈려요','모르겠어요'];
-export const practiceStorageKey = 'smu-question-attempts-v1';
+// Question numbers were reused when the whole bank was replaced. Keep old attempts separate.
+export const practiceStorageKey = 'smu-question-attempts-v2';
 export function readAttempts(raw:string|null):QuestionAttempt[] {
   if(!raw)return [];
   const parsed:unknown=JSON.parse(raw);

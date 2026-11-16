@@ -20,14 +20,14 @@
 | [FR-AUTH-01](auth/FR-AUTH-01.md) | 이메일 회원가입 | 안재우 | [M01](../milestones/M01.md) | 목업 | 0/2 |
 | [FR-AUTH-02](auth/FR-AUTH-02.md) | 로그인 | 안재우 | [M01](../milestones/M01.md) | 목업 | 0/2 |
 | [FR-AUTH-03](auth/FR-AUTH-03.md) | 로그아웃 | 안재우 | [M01](../milestones/M01.md) | 미구현 | 0/1 |
-| [FR-AUTH-04](auth/FR-AUTH-04.md) | 접근 권한과 로그인 상태 확인 | 안재우 | [M01](../milestones/M01.md) | 미구현 | 0/2 |
+| [FR-AUTH-04](auth/FR-AUTH-04.md) | 접근 권한과 로그인 상태 확인 | 안재우 | [M01](../milestones/M01.md) | 미구현 | 0/3 |
 | [FR-LRN-01](lrn/FR-LRN-01.md) | 단원과 개념요약 조회 | 정재호 | [M02](../milestones/M02.md) | 화면 완료 | 1/1 |
 | [FR-LRN-02](lrn/FR-LRN-02.md) | 개념 검색과 범위 필터 | 정재호 | [M02](../milestones/M02.md) | 화면 완료 | 2/2 |
 | [FR-LRN-03](lrn/FR-LRN-03.md) | 관련 기출문제와 개념 연결 | 정재호 | [M02](../milestones/M02.md) | 화면 완료 | 2/2 |
 | [FR-LRN-04](lrn/FR-LRN-04.md) | 학습 완료 표시 | 정재호 | [M03](../milestones/M03.md) | 화면 완료·서버 미연결 | 0/1 |
 | [FR-QST-01](qst/FR-QST-01.md) | 문제 검색과 범위 선택 | 윤도경 | [M02](../milestones/M02.md) | 화면 완료 | 2/2 |
 | [FR-QST-02](qst/FR-QST-02.md) | 공통 문제 화면과 답안 선택 | 윤도경 | [M02](../milestones/M02.md) | 화면 완료·정답 노출 | 1/2 |
-| [FR-QST-03](qst/FR-QST-03.md) | 서버 채점과 답안 저장 | 윤도경 및 곽다인 | [M02](../milestones/M02.md) | 부분(브라우저 채점) | 0/2 |
+| [FR-QST-03](qst/FR-QST-03.md) | 서버 채점과 답안 저장 | 윤도경 및 곽다인 | [M02](../milestones/M02.md) | 부분(브라우저 채점) | 0/4 |
 | [FR-QST-04](qst/FR-QST-04.md) | 정답 해설과 재풀이 | 윤도경 | [M02](../milestones/M02.md) | 화면 완료·서버 미연결 | 0/1 |
 | [FR-REV-01](rev/FR-REV-01.md) | 개인 풀이 기록과 복습 목록 | 곽다인 | [M03](../milestones/M03.md) | 화면 완료·서버 미연결 | 1/2 |
 | [FR-REV-02](rev/FR-REV-02.md) | 개념별 첫 풀이 정답률과 취약 판정 | 곽다인 | [M03](../milestones/M03.md) | 미구현 | 0/2 |
@@ -41,7 +41,7 @@
 | [FR-CHL-04](chl/FR-CHL-04.md) | 도전장 결과와 내 목록 | 이재윤 | [M05](../milestones/M05.md) | 미구현 | 0/2 |
 | [FR-COM-01](com/FR-COM-01.md) | 게시글 목록과 상세 조회 | 안재우 | [M06](../milestones/M06.md) | 부분(브라우저 저장) | 0/1 |
 | [FR-COM-02](com/FR-COM-02.md) | 게시글 작성 | 안재우 | [M06](../milestones/M06.md) | 부분(브라우저 저장) | 0/1 |
-| [FR-COM-03](com/FR-COM-03.md) | 게시글 수정과 삭제 | 안재우 | [M06](../milestones/M06.md) | 미구현 | 0/1 |
+| [FR-COM-03](com/FR-COM-03.md) | 게시글 수정과 삭제 | 안재우 | [M06](../milestones/M06.md) | 미구현 | 0/2 |
 | [FR-COM-04](com/FR-COM-04.md) | 댓글 작성과 조회 | 안재우 | [M06](../milestones/M06.md) | 부분(브라우저 저장) | 0/1 |
 | [FR-SYS-01](sys/FR-SYS-01.md) | 화면 이동과 주소 상태 복원 | 정재호 및 전원 | [M07](../milestones/M07.md) | 화면 완료 | 1/2 |
 | [FR-SYS-02](sys/FR-SYS-02.md) | 학습 자료 등록과 연결 검증 | 정재호 | [M02](../milestones/M02.md) | 부분 | 1/2 |
