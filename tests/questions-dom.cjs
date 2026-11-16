@@ -55,23 +55,40 @@ const goto=async(url)=>act(async()=>{window.history.pushState(null,'',url);windo
  await changeSelect(select,'6');
  assert.equal(picker.options.length,105);
  assert.equal(picker.options[1].value,'Q424');
+ await changeSelect(document.querySelectorAll('.question-filters select')[1],'31');
+ assert.equal(picker.options.length,17);
  await fill('４２４번');
  assert.equal(picker.options.length,2);
  assert.equal(picker.options[1].value,'Q424');
  await changeSelect(picker,'Q424');
  assert.equal(document.querySelector('.question-meta .pill').textContent,'Q424');
+ // Remount against the same URL to simulate a fresh page load.
+ await act(async()=>root.render(null));
+ await act(async()=>root.render(React.createElement(StudyApp)));
+ assert.equal(document.querySelector('.question-filters input').value,'４２４번');
+ assert.deepEqual([...document.querySelectorAll('.question-filters select')].map(s=>s.value),['6','31']);
+ assert.equal(document.querySelector('.question-picker select').value,'Q424');
+ assert.equal(document.querySelector('.question-picker select').options.length,2);
  await click(document.querySelector('.question-concepts button'));
  assert.ok(current().startsWith('SECTION 31.'));
  await click(document.querySelector('.lesson-related a[href$=Q424]'));
  assert.equal(document.querySelector('.question-meta .pill').textContent,'Q424');
  await changeSelect(document.querySelector('.question-filters select'),'7');
- assert.equal(document.querySelector('.question-picker select').options.length,1);
  assert.match(document.querySelector('.empty').textContent,/PART 7/);
+ assert.equal(document.querySelector('.question-panel'),null);
+ assert.equal(document.querySelector('.question-picker'),null);
+ assert.equal(button('답안 제출'),undefined);
+ await changeSelect(document.querySelector('.question-filters select'),'6');
+ await fill('zzqq없는말');
+ assert.match(document.querySelector('.empty').textContent,/이 조건에 맞는 문제가 없어/);
+ assert.equal(document.querySelector('.question-panel'),null);
+ await fill('');
+ assert.equal(document.querySelector('.question-meta .pill').textContent,'Q424');
  await act(async()=>root.render(null));
  // Submit every original answer through the real rendered controls, catching answer index mistakes.
  const recorded=[];
  for(const q of questions){
-  await act(async()=>root.render(React.createElement(QuestionPractice,{questionId:q.id,onQuestion:()=>{},onLesson:()=>{},onAttempt:a=>recorded.push(a),ready:true})));
+  await act(async()=>root.render(React.createElement(QuestionPractice,{questionId:q.id,filters:{part:0,section:0,search:''},onFilters:()=>{},onQuestion:()=>{},onLesson:()=>{},onAttempt:a=>recorded.push(a),ready:true})));
   await act(async()=>document.querySelectorAll('input[name=answer]')[q.answer-1].click());
   await act(async()=>button('확실해요').click());
   await act(async()=>button('답안 제출').click());
@@ -79,5 +96,5 @@ const goto=async(url)=>act(async()=>{window.history.pushState(null,'',url);windo
  }
  assert.equal(recorded.length,527);
  await act(async()=>root.unmount());
- console.log('PASS: UI submission of all 527 answers, duplicate guard, old bank isolation, persistence, lesson links, history, missing IDs and empty filters');
+ console.log('PASS: UI submission of all 527 answers, persistence, lesson links, filter URL restoration and empty results without a question card');
 })().catch(e=>{console.error(e);process.exitCode=1});
